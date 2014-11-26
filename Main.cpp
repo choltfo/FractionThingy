@@ -1,4 +1,7 @@
 #include <iostream>
+#include <stdio.h>      /* printf, fgets */
+#include <stdlib.h>     /* atoi */
+
 
 struct Frac {
 	int num;
@@ -63,11 +66,38 @@ bool Frac::operator!=(const Frac &f) const {
     return false;
 }
 
+enum Operator {
+	ADD = '+',
+	SUB = '-',
+	MUL = '*',
+	DIV = '/'
+};
+
+struct Expression {
+	Frac a;
+	Frac b;
+	Operator o;
+
+    Frac(){}
+    Frac(Frac n, Frac d, Operator e) {
+        a = n;
+        b = d;
+        o = e;
+    }
+    
+};
+
+
+//--------------------------- CLASS THINGS
+
 int isCharIntOrMinus (char c) {
 	return c == '-' || (c >= '0' && c <= '9');
 }
 int isCharInt (char c) {
 	return (c >= '0' && c <= '9');
+}
+int isCharOper (char c) {
+	return (c == '-' || c == '*' || c == '/' || c == '+');
 }
 
 // Needs a pointer to a fraction
@@ -91,13 +121,31 @@ int parseFrac (char * s, Frac * f) {
 	if (s[i] == ')') return 0;
 	s[i] = '\0';
 	f->num = atoi(s+den);
+	return i+1;
 }
 
-//int parseExp (char * s, )
+int parseExp (char * s, Expression e) {
+	int pos = 0;
+	if (!(pos += parseFrac(s+pos,e.a))) return 0;
+	while (!charIsOper(s[pos])) {
+		if (s[pos] != ' ') return 0;
+		++pos;
+	}
+	e.o = (Expressio)s[pos];
+	while (!charIsOper(s[pos])) {
+		if (s[pos] != ' ') return 0;
+		++pos;
+	}
+	if (!(pos += parseFrac(s+pos,e.b))) return 0;
+	return 1;
+}
 
 int main () {
     Frac f;
     std::cin >> f;
+    std::cout << simplify(f);
+    char input [80] = "(-1200/120) * (10/435)";
+    parseFrac (input, &f);
     std::cout << simplify(f);
     return 0;
 }
