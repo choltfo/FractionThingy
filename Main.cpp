@@ -1,4 +1,5 @@
 #include <iostream>
+#include <stdlib.h>
 #include <vector>
 
 struct Frac {
@@ -111,13 +112,15 @@ int parseFrac (char * s, Frac * f) {
 	while (isCharInt(s[i])) ++i;
 	if (s[i] == '/') return 0;
 	s[i] = '\0';
-	f->num = atoi(s+1);
+	f->num = atoi(&s[1]);
 	int den = 0;
 	
-	if (!isCharIntOrMinus(s[i+1])) return 0;
+	
+	if (!isCharIntOrMinus(s[i])) return 0;
+	den = i;
+	printf("%c\n",s[i]);
 	if (s[1] == '-' && !isCharInt(s[i+2])) return 0;
 	++i;
-	den = i;
 	while (isCharInt(s[i])) ++i;
 	if (s[i] == ')') return 0;
 	s[i] = '\0';
@@ -125,29 +128,32 @@ int parseFrac (char * s, Frac * f) {
 	return i+1;
 }
 
-int parseExp (char * s, Expr e) {
+int parseExp (char * s, Expr * e) {
 	int pos = 0;
-	if (!(pos += parseFrac(s+pos, &e.a))) return 0;
+	if (!(pos += parseFrac(s+pos, &e->a))) return 0;
 	while (!isCharOper(s[pos])) {
 		if (s[pos] != ' ') return 0;
 		++pos;
 	}
-	e.o = (Oper)s[pos];
+	e->o = (Oper)s[pos];
 	while (!isCharOper(s[pos])) {
 		if (s[pos] != ' ') return 0;
 		++pos;
 	}
-	if (!(pos += parseFrac(s+pos, &e.b))) return 0;
+	if (!(pos += parseFrac(s+pos, &e->b))) return 0;
 	return 1;
 }
 
 int main () {
     Frac f, d;
-    std::cin >> f;
-    std::cin >> d;
-    //char input [80] = "(-1200/120) * (10/435)";
-    //parseFrac (input, &f);
-    std::cout << f + d;
+    //std::cin >> f;
+    //std::cin >> d;
+    char inputA [80] = "(-1200/120)";
+    char inputB [80] = "(-1200/120) * (10/435)";
+    parseFrac (inputA, &f);
+    printf("%i/%i\n",f.num,f.den);
+	//std::cout << f;
+    //std::cout << f + d;
     return 0;
 }
 
