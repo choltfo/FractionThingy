@@ -1,6 +1,6 @@
 #include <iostream>
 
-struct Fraction {
+struct Frac {
 	int num;
 	int den;
 
