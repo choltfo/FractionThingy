@@ -46,13 +46,11 @@ Frac Frac::operator-(void) const {
 }
 
 Frac Frac::operator+(const Frac &f) const {
-
-    return Frac();
+    return Frac((num * f.den) + (f.num * den), den * f.den).simplify();
 }
 
 Frac Frac::operator-(const Frac &f) const {
-
-    return Frac();
+    return (*this + -f);
 }
 
 Frac Frac::operator*(const Frac &f) const {
@@ -64,11 +62,11 @@ Frac Frac::operator/(const Frac &f) const {
 }
 
 bool Frac::operator==(const Frac &f) const {
-    return false;
+    return (num == f.num && den == f.den);
 }
 
 bool Frac::operator!=(const Frac &f) const {
-    return false;
+    return !(*this == f);
 }
 
 enum Oper {
@@ -90,7 +88,6 @@ struct Expr {
         o = e;
     }
 };
-
 
 //--------------------------- CLASS THINGS
 
@@ -145,10 +142,12 @@ int parseExp (char * s, Expr e) {
 }
 
 int main () {
-    Frac f;
-    char input [80] = "(-1200/120) * (10/435)";
-    parseFrac (input, &f);
-    std::cout << f.simplify();
+    Frac f, d;
+    std::cin >> f;
+    std::cin >> d;
+    //char input [80] = "(-1200/120) * (10/435)";
+    //parseFrac (input, &f);
+    std::cout << f + d;
     return 0;
 }
 
