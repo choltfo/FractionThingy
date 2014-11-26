@@ -1,7 +1,5 @@
 #include <iostream>
-#include <stdio.h>      /* printf, fgets */
-#include <stdlib.h>     /* atoi */
-
+#include <vector>
 
 struct Frac {
 	int num;
@@ -12,6 +10,9 @@ struct Frac {
         num = n;
         den = d;
     }
+
+	Frac simplify();
+	Frac inv() const;
 
     Frac operator-(void) const;
     Frac operator+(const Frac& f) const;
@@ -29,33 +30,37 @@ int gcd (int a, int b) {
     return b == 0 ? a : gcd (b, a % b);
 }
 
-Frac simplify (Frac f) {
-    Frac res;
-    int GCD = gcd (f.num,f.den);
-    res.num = f.num/GCD;
-    res.den = f.den/GCD;
-    return res;
+Frac Frac::simplify() {
+    int GCD = gcd (num, den);
+    num = num/GCD;
+    den = den/GCD;
+    return *this;
+}
+
+Frac Frac::inv() const {
+	return Frac(den, num).simplify();
 }
 
 Frac Frac::operator-(void) const {
-    return Frac(-num, den);
+    return Frac(-num, den).simplify();
 }
 
-Frac Frac::operator+(const Frac &v) const {
+Frac Frac::operator+(const Frac &f) const {
 
     return Frac();
 }
 
-Frac Frac::operator-(const Frac &v) const {
+Frac Frac::operator-(const Frac &f) const {
+
     return Frac();
 }
 
 Frac Frac::operator*(const Frac &f) const {
-    return Frac();
+    return Frac(num * f.num, den * f.den).simplify();
 }
 
 Frac Frac::operator/(const Frac &f) const {
-    return Frac();
+    return (*this * f.inv()).simplify();
 }
 
 bool Frac::operator==(const Frac &f) const {
@@ -66,25 +71,24 @@ bool Frac::operator!=(const Frac &f) const {
     return false;
 }
 
-enum Operator {
+enum Oper {
 	ADD = '+',
 	SUB = '-',
 	MUL = '*',
 	DIV = '/'
 };
 
-struct Expression {
+struct Expr {
 	Frac a;
 	Frac b;
-	Operator o;
+	Oper o;
 
-    Frac(){}
-    Frac(Frac n, Frac d, Operator e) {
+    Expr(){}
+    Expr(Frac n, Frac d, Oper e) {
         a = n;
         b = d;
         o = e;
     }
-    
 };
 
 
@@ -124,29 +128,27 @@ int parseFrac (char * s, Frac * f) {
 	return i+1;
 }
 
-int parseExp (char * s, Expression e) {
+int parseExp (char * s, Expr e) {
 	int pos = 0;
-	if (!(pos += parseFrac(s+pos,e.a))) return 0;
-	while (!charIsOper(s[pos])) {
+	if (!(pos += parseFrac(s+pos, &e.a))) return 0;
+	while (!isCharOper(s[pos])) {
 		if (s[pos] != ' ') return 0;
 		++pos;
 	}
-	e.o = (Expressio)s[pos];
-	while (!charIsOper(s[pos])) {
+	e.o = (Oper)s[pos];
+	while (!isCharOper(s[pos])) {
 		if (s[pos] != ' ') return 0;
 		++pos;
 	}
-	if (!(pos += parseFrac(s+pos,e.b))) return 0;
+	if (!(pos += parseFrac(s+pos, &e.b))) return 0;
 	return 1;
 }
 
 int main () {
     Frac f;
-    std::cin >> f;
-    std::cout << simplify(f);
     char input [80] = "(-1200/120) * (10/435)";
     parseFrac (input, &f);
-    std::cout << simplify(f);
+    std::cout << f.simplify();
     return 0;
 }
 
@@ -156,8 +158,9 @@ std::ostream &operator<<(std::ostream &os, const Frac &f) {
 }
 
 std::istream &operator>>(std::istream &is, Frac &f) {
-    char dumdum;
-    is >> f.num >> dumdum >> f.den;
+    char dum;
+    is >> f.num >> dum >> f.den;
+	if (dum != '/') is.setstate(std::ios::badbit);
     return is;
 }
 
