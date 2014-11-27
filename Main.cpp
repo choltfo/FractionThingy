@@ -129,10 +129,11 @@ std::istream &operator>>(std::istream &is, Frac &f) {
 
 int main () {
     Frac f;
-	std::string inputA = "(-1200/120)";
+    Expr e;
+	std::string inputA = "(-1200/120) * (10/46342)";
 	std::stringstream ss;
 	ss << inputA;
-	ss >> f;
-	std::cout << f.simplify();
+	//ss >> e;
+	std::cout << e << '\n';
     return 0;
 }
