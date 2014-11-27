@@ -1,6 +1,9 @@
 #include <iostream>
-#include <stdlib.h>
 #include <vector>
+
+int gcd (int a, int b) {
+	return b == 0 ? a : gcd (b, a % b);
+}
 
 struct Frac {
 	int num;
@@ -26,10 +29,6 @@ struct Frac {
     friend std::ostream& operator<<(std::ostream& os, const Frac& f);
     friend std::istream& operator>>(std::istream& is, Frac& f);
 };
-
-int gcd (int a, int b) {
-    return b == 0 ? a : gcd (b, a % b);
-}
 
 Frac Frac::simplify() {
     int GCD = gcd (num, den);
@@ -114,8 +113,7 @@ int parseFrac (char * s, Frac * f) {
 	s[i] = '\0';
 	f->num = atoi(&s[1]);
 	int den = 0;
-	
-	
+
 	if (!isCharIntOrMinus(s[i])) return 0;
 	den = i;
 	printf("%c\n",s[i]);
@@ -144,29 +142,37 @@ int parseExp (char * s, Expr * e) {
 	return 1;
 }
 
-int main () {
-    Frac f, d;
-    //std::cin >> f;
-    //std::cin >> d;
-    char inputA [80] = "(-1200/120)";
-    char inputB [80] = "(-1200/120) * (10/435)";
-    parseFrac (inputA, &f);
-    printf("%i/%i\n",f.num,f.den);
-	//std::cout << f;
-    //std::cout << f + d;
-    return 0;
+std::istream &operator>>(std::istream &in, char c) {
+	in >> std::ws;
+	if (in.peek() == c)
+		in.ignore();
+	else
+		in.clear(std::ios::failbit);
+	return in;
 }
 
 std::ostream &operator<<(std::ostream &os, const Frac &f) {
-    os << f.num;
+	os << f.num;
 	if (f.den != 1) os  << '/' << f.den;
-    return os;
+	return os;
 }
 
 std::istream &operator>>(std::istream &is, Frac &f) {
-    char dum;
-    is >> f.num >> dum >> f.den;
-	if (dum != '/') is.setstate(std::ios::badbit);
-    return is;
+	int n = 0, d = 0;
+	is >> n >> '/' >> d;
+	if (!is.good()) return is;
+	f.num = n;
+	f.den = d;
+	return is;
 }
 
+int main () {
+    Frac f;
+    char inputA [80] = "(-1200/120)";
+    char inputB [80] = "(-1200/120) * (10/435)";
+    parseFrac (inputA, &f);
+	std::cin >> f;
+	if (std::cin.good()) std::cout << f;
+
+    return 0;
+}
