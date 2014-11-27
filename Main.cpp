@@ -158,7 +158,8 @@ int main () {
 }
 
 std::ostream &operator<<(std::ostream &os, const Frac &f) {
-    os << f.num << '/' << f.den;
+    os << f.num;
+	if (f.den != 1) os  << '/' << f.den;
     return os;
 }
 
