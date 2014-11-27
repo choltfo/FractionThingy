@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <sstream>
 
 int gcd (int a, int b) {
 	return b == 0 ? a : gcd (b, a % b);
@@ -93,77 +94,33 @@ struct Expr {
     }
 };
 
-//--------------------------- CLASS THINGS
-
-int isCharIntOrMinus (char c) {
-	return c == '-' || (c >= '0' && c <= '9');
-}
-int isCharInt (char c) {
-	return (c >= '0' && c <= '9');
-}
-int isCharOper (char c) {
-	return (c == '-' || c == '*' || c == '/' || c == '+');
+Expr parseExpr(std::istream &s) {
+	Expr res;
+	s >> res.a;
+	//s >> res.o;
+	s >> res.b;
+	return res;
 }
 
-// Needs a pointer to a fraction
-// and a pointer to char 0 of a the Fraction in the expression.
-int parseFrac (char * s, Frac * f) {
-	if (s[0] != '(') return 0;
-	if (!isCharIntOrMinus(s[1])) return 0;
-	if (s[1] == '-' && !isCharInt(s[2])) return 0;
-	int i = 1;
-	while (isCharInt(s[i])) ++i;
-	if (s[i] == '/') return 0;
-	s[i] = '\0';
-	f->num = atoi(&s[1]);
-	int den = 0;
-
-	if (!isCharIntOrMinus(s[i])) return 0;
-	den = i;
-	printf("%c\n",s[i]);
-	if (s[1] == '-' && !isCharInt(s[i+2])) return 0;
-	++i;
-	while (isCharInt(s[i])) ++i;
-	if (s[i] == ')') return 0;
-	s[i] = '\0';
-	f->num = atoi(s+den);
-	return i+1;
-}
-
-int parseExp (char * s, Expr * e) {
-	int pos = 0;
-	if (!(pos += parseFrac(s+pos, &e->a))) return 0;
-	while (!isCharOper(s[pos])) {
-		if (s[pos] != ' ') return 0;
-		++pos;
-	}
-	e->o = (Oper)s[pos];
-	while (!isCharOper(s[pos])) {
-		if (s[pos] != ' ') return 0;
-		++pos;
-	}
-	if (!(pos += parseFrac(s+pos, &e->b))) return 0;
-	return 1;
-}
-
-std::istream &operator>>(std::istream &in, char c) {
-	in >> std::ws;
-	if (in.peek() == c)
-		in.ignore();
+std::istream &operator>>(std::istream &is, char c) {
+	is >> std::ws;
+	if (is.peek() == c)
+		is.ignore();
 	else
-		in.clear(std::ios::failbit);
-	return in;
+		is.clear(std::ios::failbit);
+	return is;
 }
 
 std::ostream &operator<<(std::ostream &os, const Frac &f) {
-	os << f.num;
+	os << '(' << f.num;
 	if (f.den != 1) os  << '/' << f.den;
+	os << ')';
 	return os;
 }
 
 std::istream &operator>>(std::istream &is, Frac &f) {
 	int n = 0, d = 0;
-	is >> n >> '/' >> d;
+	is >> '(' >> n >> '/' >> d >> ')';
 	if (!is.good()) return is;
 	f.num = n;
 	f.den = d;
@@ -172,11 +129,10 @@ std::istream &operator>>(std::istream &is, Frac &f) {
 
 int main () {
     Frac f;
-    char inputA [80] = "(-1200/120)";
-    char inputB [80] = "(-1200/120) * (10/435)";
-    parseFrac (inputA, &f);
-	std::cin >> f;
-	if (std::cin.good()) std::cout << f.simplify();
-
+	std::string inputA = "(-1200/120)";
+	std::stringstream ss;
+	ss << inputA;
+	ss >> f;
+	std::cout << f.simplify();
     return 0;
 }
