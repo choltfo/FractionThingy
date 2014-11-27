@@ -6,6 +6,18 @@ int gcd (int a, int b) {
 	return b == 0 ? a : gcd (b, a % b);
 }
 
+std::istream &operator>>(std::istream &is, char c) {
+	is >> std::ws;
+	if (is.peek() == c) {
+		is.ignore();
+		is >> c;
+	}
+	else
+		is.clear(std::ios::failbit);
+
+	return is;
+}
+
 struct Frac {
 	int num;
 	int den;
@@ -74,43 +86,6 @@ bool Frac::operator!=(const Frac &f) const {
     return !(*this == f);
 }
 
-enum Oper {
-	ADD = '+',
-	SUB = '-',
-	MUL = '*',
-	DIV = '/'
-};
-
-struct Expr {
-	Frac a;
-	Frac b;
-	Oper o;
-
-    Expr(){}
-    Expr(Frac n, Frac d, Oper e) {
-        a = n;
-        b = d;
-        o = e;
-    }
-};
-
-Expr parseExpr(std::istream &s) {
-	Expr res;
-	s >> res.a;
-	//s >> res.o;
-	s >> res.b;
-	return res;
-}
-
-std::istream &operator>>(std::istream &is, char c) {
-	is >> std::ws;
-	if (is.peek() == c)
-		is.ignore();
-	else
-		is.clear(std::ios::failbit);
-	return is;
-}
-
 std::ostream &operator<<(std::ostream &os, const Frac &f) {
 	os << '(' << f.num;
 	if (f.den != 1) os  << '/' << f.den;
@@ -124,6 +99,58 @@ std::istream &operator>>(std::istream &is, Frac &f) {
 	if (!is.good()) return is;
 	f.num = n;
 	f.den = d;
+	return is;
+}
+
+bool isCharOper (char c) {
+	return (c == '-' || c == '*' || c == '/' || c == '+');
+}
+
+struct Expr {
+	Frac a;
+	Frac b;
+	char o;
+
+    Expr(){}
+    Expr(Frac n, Frac d, char e) {
+        a = n;
+        b = d;
+        o = e;
+    }
+
+	Frac eval();
+
+	friend std::ostream& operator<<(std::ostream& os, const Expr& e);
+	friend std::istream& operator>>(std::istream& is, Expr& e);
+};
+
+Frac Expr::eval() {
+	switch (o) {
+		case '+':
+			return a + b;
+		case '-':
+			return a - b;
+		case '*':
+			return a * b;
+		case '/':
+			return a / b;
+		default:
+			return Frac();
+	}
+}
+
+std::ostream &operator<<(std::ostream &os, const Expr &e) {
+	os << e.a << e.o << e.b;
+	return os;
+}
+
+std::istream &operator>>(std::istream &is, Expr &e) {
+	is >> e.a >> std::ws;
+	if (isCharOper(is.peek()))
+		is >> e.o;
+	else
+		is.clear(std::ios::failbit);
+	is >> std::ws >> e.b;
 	return is;
 }
 
@@ -146,11 +173,10 @@ int main () {
 	menu();
     Frac f;
     Expr e;
-	std::string inputA = "(-1200/120) * (10/46342)";
+	std::string inputA = "(-1200/120)*(10/5)";
 	std::stringstream ss;
 	ss << inputA;
-	//ss >> e;
 	std::cin >> e;
-	//std::cout << e << '\n';
+	std::cout << e;
     return 0;
 }
