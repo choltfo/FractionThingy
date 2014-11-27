@@ -127,13 +127,30 @@ std::istream &operator>>(std::istream &is, Frac &f) {
 	return is;
 }
 
+int menu () {
+	std::cout << "Enter the number of the option you would like:\n";
+	std::cout << "1 - Input and evaluate\n";
+	std::cout << "2 - Output operations\n";
+	std::cout << "3 - Quit\n";
+	int res = 0;
+	std::cin >> res;
+}
+
+std::vector<Expr> inputHistory;
+
+void outputAll () {
+	
+}
+
 int main () {
+	menu();
     Frac f;
     Expr e;
 	std::string inputA = "(-1200/120) * (10/46342)";
 	std::stringstream ss;
 	ss << inputA;
 	//ss >> e;
-	std::cout << e << '\n';
+	std::cin >> e;
+	//std::cout << e << '\n';
     return 0;
 }
