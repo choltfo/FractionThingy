@@ -34,6 +34,10 @@ Frac Frac::simplify() {
     int GCD = gcd (num, den);
     num = num/GCD;
     den = den/GCD;
+	if (den < 0) {
+		num *= -1;
+		den *= -1;
+	}
     return *this;
 }
 
@@ -172,7 +176,7 @@ int main () {
     char inputB [80] = "(-1200/120) * (10/435)";
     parseFrac (inputA, &f);
 	std::cin >> f;
-	if (std::cin.good()) std::cout << f;
+	if (std::cin.good()) std::cout << f.simplify();
 
     return 0;
 }
