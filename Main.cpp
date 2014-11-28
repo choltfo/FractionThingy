@@ -22,7 +22,10 @@ struct Frac {
 	int num;
 	int den;
 
-    Frac(){}
+    Frac(){
+		num = 0;
+		den = 0;
+	}
     Frac(int n, int d) {
         num = n;
         den = d;
@@ -145,12 +148,13 @@ std::ostream &operator<<(std::ostream &os, const Expr &e) {
 }
 
 std::istream &operator>>(std::istream &is, Expr &e) {
-	is >> e.a >> std::ws;
-	if (isCharOper(is.peek()))
-		is >> e.o;
-	else
-		is.clear(std::ios::failbit);
-	is >> std::ws >> e.b;
+	Frac a(0,0), b(0,0);
+	char o;
+	is >> a >> std::ws >> o >> std::ws >> b;
+	if (!is.good()) return is;
+	e.a = a;
+	e.b = b;
+	e.o = o;
 	return is;
 }
 
