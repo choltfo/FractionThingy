@@ -175,16 +175,19 @@ int main () {
 	//v.reserve(30);
 	int selection = 0;
 	while (selection != 3) {
-		Expr e;
+		Expr e = Expr(Frac(10,10), Frac(10,10), '*');
 		
-		std::string inputA = "(-1200/120)*(10/5)";
-		std::stringstream ss;
+		char inputA[80] = "(-1200/120)*(10/5)";
+		
+		std::cin >> e;
+		
+		std::cout << e << '\n';
+		std::cout << e.a << '\n';
+		std::cout << e.o << '\n';
+		std::cout << e.b << '\n' << '\n';
 		
 		switch (selection) {
-			
 			case 1 :
-				
-				
 				//std::cin >> e;
 				ss >> e;
 				
@@ -194,8 +197,10 @@ int main () {
 			case 2 :
 				outputAll();
 				break;
-		} 
-		std::cout << e;
+		}
+		
+		return 0;
+		
 		selection = menu();
 		std::cout << selection << '\n';
 	}
