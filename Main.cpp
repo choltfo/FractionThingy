@@ -188,8 +188,7 @@ int main () {
 					std::cout << "Invalid input!";
 					std::cin.clear();
 					std::cin.ignore('\n',10000);
-				}
-				else {
+				} else {
 					inputHistory.push_back(e);
 				}
 				
