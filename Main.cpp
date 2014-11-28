@@ -164,14 +164,15 @@ int menu () {
 	return res;
 }
 
+std::vector<Expr> inputHistory(0);
+
 void outputAll () {
-	/*for (Expr e : inputHistory) {
-		std::cout << e << '\n';
-	}*/
+	for (int i = 0; i < inputHistory.size(); i++) {
+		std::cout << inputHistory[i] << '=' << inputHistory[i].eval() << '\n';
+	}
 }
 
 int main () {
-	std::vector<Expr> inputHistory(30);
 	//v.reserve(30);
 	int selection = 0;
 	while (selection != 3) {
@@ -179,28 +180,24 @@ int main () {
 		
 		char inputA[80] = "(-1200/120)*(10/5)";
 		
-		std::cin >> e;
-		
-		std::cout << e << '\n';
-		std::cout << e.a << '\n';
-		std::cout << e.o << '\n';
-		std::cout << e.b << '\n' << '\n';
-		
 		switch (selection) {
-			case 1 :
-				//std::cin >> e;
-				ss >> e;
+			case 1:
+				std::cin >> e;
 				
-				inputHistory.push_back(e);
+				if (!std::cin.good()) {
+					std::cout << "Invalid input!";
+					std::cin.clear();
+					std::cin.ignore('\n',10000);
+				}
+				else {
+					inputHistory.push_back(e);
+				}
 				
 				break;
-			case 2 :
+			case 2:
 				outputAll();
 				break;
 		}
-		
-		return 0;
-		
 		selection = menu();
 		std::cout << selection << '\n';
 	}
