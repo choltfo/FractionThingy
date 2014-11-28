@@ -161,22 +161,43 @@ int menu () {
 	std::cout << "3 - Quit\n";
 	int res = 0;
 	std::cin >> res;
+	return res;
 }
 
-std::vector<Expr> inputHistory;
-
 void outputAll () {
-	
+	/*for (Expr e : inputHistory) {
+		std::cout << e << '\n';
+	}*/
 }
 
 int main () {
-	menu();
-    Frac f;
-    Expr e;
-	std::string inputA = "(-1200/120)*(10/5)";
-	std::stringstream ss;
-	ss << inputA;
-	std::cin >> e;
-	std::cout << e;
+	std::vector<Expr> inputHistory(30);
+	//v.reserve(30);
+	int selection = 0;
+	while (selection != 3) {
+		Expr e;
+		
+		std::string inputA = "(-1200/120)*(10/5)";
+		std::stringstream ss;
+		
+		switch (selection) {
+			
+			case 1 :
+				
+				
+				//std::cin >> e;
+				ss >> e;
+				
+				inputHistory.push_back(e);
+				
+				break;
+			case 2 :
+				outputAll();
+				break;
+		} 
+		std::cout << e;
+		selection = menu();
+		std::cout << selection << '\n';
+	}
     return 0;
 }
