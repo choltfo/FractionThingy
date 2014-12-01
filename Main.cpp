@@ -8,15 +8,12 @@ int gcd (int a, int b) {
 	return b == 0 ? a : gcd (b, a % b);
 }
 
-std::istream &operator>>(std::istream &is, char c) {
-	is >> std::ws;
-	if (is.peek() == c) {
-		is.ignore();
-		is >> c;
-	}
+template<char n>
+std::istream &sk(std::istream& is) {
+	if ((is >> std::ws).peek() != n)
+		is.setstate(std::ios_base::failbit);
 	else
-		is.clear(std::ios::failbit);
-
+		return is.ignore();
 	return is;
 }
 
@@ -110,8 +107,7 @@ std::ostream &operator<<(std::ostream &os, const Frac &f) {
 
 std::istream &operator>>(std::istream &is, Frac &f) {
 	int n = 0, d = 0;
-	char a;
-	is >> a >> n >> a >> d >> a;
+	is >> sk<'('> >> n >> sk<'/'> >> d >> sk<')'>;
 	if (!is.good()) return is;
 	f.num = n;
 	f.den = d;
@@ -197,8 +193,7 @@ void outputSortedOperator () {
 	for (int i = 0; i < inputHistory.size(); ++i) {
 		if (i > 0) {
 			if (inputHistory[i].o != inputHistory[i-1].o) {
-				std::cout << (inputHistory[i].o == '*' ? "MULTIPLY" : inputHistory[i].o == '/' ? "DIVIDE" : inputHistory[i].o == '+' ? "ADD" : "SUBTRACT")
-				<< '\n';
+				std::cout << (inputHistory[i].o == '*' ? "MULTIPLY" : inputHistory[i].o == '/' ? "DIVIDE" : inputHistory[i].o == '+' ? "ADD" : "SUBTRACT") << '\n';
 			}
 		} else std::cout << (inputHistory[i].o == '*' ? "MULTIPLY" : inputHistory[i].o == '/' ? "DIVIDE" : inputHistory[i].o == '+' ? "ADD" : "SUBTRACT")
 				<< '\n';
@@ -306,10 +301,8 @@ int main () {
 				break;
 				
 			
-			/*
-			case 2:
-				outputAll();
-				break;*/
+			default:
+				break;
 		}
 		selection = menu();
 		std::cout << selection << '\n';
