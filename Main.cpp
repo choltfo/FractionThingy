@@ -1,8 +1,6 @@
 #include <iostream>
 #include <vector>
 #include <sstream>
-#include <algorithm>
-
 
 int gcd (int a, int b) {
 	return b == 0 ? a : gcd (b, a % b);
@@ -188,15 +186,18 @@ inline bool exprOpSort (Expr A, Expr B) {
 	return A.o > B.o;
 }
 
+inline std::string outLabel(char o) {
+	return (o == '*' ? "MULTIPLY" : o == '/' ? "DIVIDE" : o == '+' ? "ADD" : "SUBTRACT");
+}
+
 void outputSortedOperator () {
 	std::sort(inputHistory.begin(), inputHistory.end(), exprOpSort);
 	for (int i = 0; i < inputHistory.size(); ++i) {
-		if (i > 0) {
-			if (inputHistory[i].o != inputHistory[i-1].o) {
-				std::cout << (inputHistory[i].o == '*' ? "MULTIPLY" : inputHistory[i].o == '/' ? "DIVIDE" : inputHistory[i].o == '+' ? "ADD" : "SUBTRACT") << '\n';
-			}
-		} else std::cout << (inputHistory[i].o == '*' ? "MULTIPLY" : inputHistory[i].o == '/' ? "DIVIDE" : inputHistory[i].o == '+' ? "ADD" : "SUBTRACT")
-				<< '\n';
+		if (i == 0)
+			std::cout << outLabel(inputHistory[i].o) << '\n';
+		else if (inputHistory[i].o != inputHistory[i-1].o)
+			std::cout << outLabel(inputHistory[i].o) << '\n';
+
 		std::cout << i << ": " << inputHistory[i] << " = " << inputHistory[i].eval() << '\n';
 	}
 }
@@ -225,9 +226,9 @@ int menu () {
 	std::cout << "1 - Add random expression\n";
 	std::cout << "2 - Get expression from user\n";
 	std::cout << "3 - Sort by answer (low to high)\n";
-	std::cout << "4 - Output expression with answer\n";
-	std::cout << "5 - Delete expression by index\n";
-	std::cout << "6 - Sort by operation\n";
+	std::cout << "4 - Sort by operation\n";
+	std::cout << "5 - Output expression with answer\n";
+	std::cout << "6 - Delete expression by index\n";
 	std::cout << "7 - Quit\n";
 	int res = 0;
 	std::cin >> res;
@@ -241,22 +242,21 @@ int menu () {
 }
 
 int main () {
-	//v.reserve(30);
+	srand(time(NULL));
 	int selection = 0;
 	int index = 0;
-	while (selection != 7) {
-		Expr e = Expr(Frac(10,10), Frac(10,10), '*');
-		
-		char inputA[80] = "(-1200/120)*(10/5)";
-		
+	while (1) {
+		Expr e;
+
 		switch (selection) {
 			/*
 				1 Add random expression
 				2 Get expression from user
 				3 Sort by answer (low to high)
-				4 Output expression with answers
-				5 Delete expression by index
-				6 Sort by operation
+				4 Sort by operation
+				5 Output expression with answers
+				6 Delete expression by index
+				7 Quit
 			*/
 			case 1:
 				std::cout << "Generating random expression...\n";
@@ -278,10 +278,14 @@ int main () {
 				outputSortedAnswer();
 				break;
 			case 4:
+				std::cout << "Outputting expressions sorted by operator...\n";
+				outputSortedOperator();
+				break;
+			case 5:
 				std::cout << "Outputting answers...\n";
 				outputAll();
 				break;
-			case 5:
+			case 6:
 				std::cout << "Enter index of expression to remove:\n";
 				
 				std::cin >> index;
@@ -295,17 +299,13 @@ int main () {
 					else inputHistory.erase(inputHistory.begin() + index);
 				}
 				break;
-			case 6:
-				std::cout << "Outputting expressions sorted by operator...\n";
-				outputSortedOperator();
-				break;
-				
-			
+			case 7:
+				outputAll();
+				return 0;
 			default:
 				break;
 		}
 		selection = menu();
-		std::cout << selection << '\n';
 	}
     return 0;
 }
