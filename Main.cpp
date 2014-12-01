@@ -189,13 +189,12 @@ int main () {
 				std::cin >> e;
 				
 				if (!std::cin.good()) {
-					std::cout << "Invalid input!";
+					std::cout << "Invalid input!\n";
 					std::cin.clear();
-					std::cin.ignore('\n',10000);
+					std::cin.ignore(10000, '\n');
 				} else {
 					inputHistory.push_back(e);
 				}
-				
 				break;
 			case 2:
 				outputAll();
