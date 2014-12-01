@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <sstream>
+#include <stdlib.h>     /* srand, rand */
 
 int gcd (int a, int b) {
 	return b == 0 ? a : gcd (b, a % b);
@@ -165,15 +166,37 @@ int menu () {
 	std::cout << "3 - Quit\n";
 	int res = 0;
 	std::cin >> res;
-	return res;
+	if (std::cin.good()) return res;
+	else {
+		std::cout << "Invalid selection!\n";
+		std::cin.clear();
+		std::cin.ignore(10000,'\n');
+		return 0;
+	}
 }
 
 std::vector<Expr> inputHistory(0);
 
-void outputAll () {
-	for (int i = 0; i < inputHistory.size(); i++) {
-		std::cout << inputHistory[i] << '=' << inputHistory[i].eval() << '\n';
+inline bool exprComp(Expr A, Expr B){
+	return A.eval() < B.eval();
+}
+
+void outputSortedAnswer () {
+	std::sort(inp0utHistory.begin(), inputHistory.end(), exprComp);
+	for (int i = 0; i < inputHistory.size(); ++i) {
+		std::cout << i << ": " << inputHistory[i] << " = " << inputHistory[i].eval() << '\n';
 	}
+}
+
+Expr randomExpr () {
+	int op = rand() % 4;
+	
+	Expr e(
+		Frac(rand() % 100, rand() % 100 * (rand() %2 == 0 ? 1 : -1)),
+		Frac(rand() % 100, rand() % 100 * (rand() %2 == 0 ? 1 : -1)),
+		op >= 2 ? (op == 2 ? '*' : '/') : (op == 0 ? '*' : '/')
+	);
+	return e;
 }
 
 int main () {
@@ -185,7 +208,19 @@ int main () {
 		char inputA[80] = "(-1200/120)*(10/5)";
 		
 		switch (selection) {
+			/*
+				1 Add random expression
+				2 Get expression from user
+				3 Sort by answer (low to high)
+				4 Output expression with answers
+				5 Delete expression by index
+				6 Sort by operation
+			*/
 			case 1:
+				std::cout << "Generating random expression...";
+				inputHistory.push_back(randomExpr);
+				break;
+			case 2:
 				std::cin >> e;
 				
 				if (!std::cin.good()) {
@@ -196,9 +231,15 @@ int main () {
 					inputHistory.push_back(e);
 				}
 				break;
+			case 3:
+				std::cout << "Outputting sorted expressions\n"
+				outputSortedAnswer();
+				break;
+			
+			/*
 			case 2:
 				outputAll();
-				break;
+				break;*/
 		}
 		selection = menu();
 		std::cout << selection << '\n';
