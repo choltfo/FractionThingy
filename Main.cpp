@@ -196,8 +196,8 @@ void outputSortedOperator () {
 	std::sort(inputHistory.begin(), inputHistory.end(), exprOpSort);
 	for (int i = 0; i < inputHistory.size(); ++i) {
 		if (i > 0) {
-			if (inputHistory[i].n != inputHistory[i-1].n) {
-				std::cout << (inputHistory[i].n == '*' ? "MULTIPLY" : inputHistory[i].n == '/' ? "DIVIDE" : inputHistory[i].n == '+' ? "ADD" : "SUBTRACT")
+			if (inputHistory[i].o != inputHistory[i-1].o) {
+				std::cout << (inputHistory[i].o == '*' ? "MULTIPLY" : inputHistory[i].o == '/' ? "DIVIDE" : inputHistory[i].o == '+' ? "ADD" : "SUBTRACT")
 				<< '\n';
 			}
 		}
