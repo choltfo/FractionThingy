@@ -1,7 +1,8 @@
 #include <iostream>
 #include <vector>
 #include <sstream>
-#include <stdlib.h>     /* srand, rand */
+#include <algorithm>
+
 
 int gcd (int a, int b) {
 	return b == 0 ? a : gcd (b, a % b);
@@ -177,15 +178,19 @@ int menu () {
 
 std::vector<Expr> inputHistory(0);
 
-inline bool exprComp(Expr A, Expr B){
-	return A.eval() < B.eval();
+inline bool exprComp (Expr A, Expr B) {
+	return true; //A.eval() < B.eval();
 }
 
-void outputSortedAnswer () {
-	std::sort(inp0utHistory.begin(), inputHistory.end(), exprComp);
+void outputAll () {
 	for (int i = 0; i < inputHistory.size(); ++i) {
 		std::cout << i << ": " << inputHistory[i] << " = " << inputHistory[i].eval() << '\n';
 	}
+}
+
+void outputSortedAnswer () {
+	std::sort(inputHistory.begin(), inputHistory.end(), exprComp);
+	outputAll();
 }
 
 inline bool exprOpSort (Expr A, Expr B) {
@@ -235,7 +240,7 @@ int main () {
 			*/
 			case 1:
 				std::cout << "Generating random expression...";
-				inputHistory.push_back(randomExpr);
+				inputHistory.push_back(randomExpr());
 				break;
 			case 2:
 				std::cin >> e;
@@ -249,8 +254,12 @@ int main () {
 				}
 				break;
 			case 3:
-				std::cout << "Outputting sorted expressions\n"
+				std::cout << "Outputting sorted expressions...\n";
 				outputSortedAnswer();
+				break;
+			case 4:
+				std::cout << "Outputting answers...\n";
+				outputAll();
 				break;
 			
 			/*
