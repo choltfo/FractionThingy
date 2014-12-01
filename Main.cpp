@@ -171,26 +171,10 @@ std::istream &operator>>(std::istream &is, Expr &e) {
 	return is;
 }
 
-int menu () {
-	std::cout << "Enter the number of the option you would like:\n";
-	std::cout << "1 - Input and evaluate\n";
-	std::cout << "2 - Output operations\n";
-	std::cout << "3 - Quit\n";
-	int res = 0;
-	std::cin >> res;
-	if (std::cin.good()) return res;
-	else {
-		std::cout << "Invalid selection!\n";
-		std::cin.clear();
-		std::cin.ignore(10000,'\n');
-		return 0;
-	}
-}
-
 std::vector<Expr> inputHistory(0);
 
 inline bool exprComp (Expr A, Expr B) {
-	return true; //A.eval() < B.eval();
+	return A.eval() < B.eval();
 }
 
 void outputAll () {
@@ -209,14 +193,17 @@ inline bool exprOpSort (Expr A, Expr B) {
 }
 
 void outputSortedOperator () {
+	std::cout << "OKOJLKJehmaszdx\n";
 	std::sort(inputHistory.begin(), inputHistory.end(), exprOpSort);
+	std::cout << "OKOJLKJehmaszdx\n";
 	for (int i = 0; i < inputHistory.size(); ++i) {
 		if (i > 0) {
 			if (inputHistory[i].o != inputHistory[i-1].o) {
 				std::cout << (inputHistory[i].o == '*' ? "MULTIPLY" : inputHistory[i].o == '/' ? "DIVIDE" : inputHistory[i].o == '+' ? "ADD" : "SUBTRACT")
 				<< '\n';
 			}
-		}
+		} else std::cout << (inputHistory[i].o == '*' ? "MULTIPLY" : inputHistory[i].o == '/' ? "DIVIDE" : inputHistory[i].o == '+' ? "ADD" : "SUBTRACT")
+				<< '\n';
 		std::cout << i << ": " << inputHistory[i] << " = " << inputHistory[i].eval() << '\n';
 	}
 }
@@ -225,17 +212,46 @@ Expr randomExpr () {
 	int op = rand() % 4;
 	
 	Expr e(
-		Frac(rand() % 100, rand() % 100 * (rand() %2 == 0 ? 1 : -1)),
-		Frac(rand() % 100, rand() % 100 * (rand() %2 == 0 ? 1 : -1)),
-		op >= 2 ? (op == 2 ? '*' : '/') : (op == 0 ? '*' : '/')
+		Frac(rand() % 99 + 1, rand() % 99 + 1 * (rand() %2 == 0 ? 1 : -1)),
+		Frac(rand() % 99 + 1, rand() % 99 + 1 * (rand() %2 == 0 ? 1 : -1)),
+		op >= 2 ? (op == 2 ? '*' : '/') : (op == 0 ? '+' : '-')
 	);
 	return e;
+}
+
+int menu () {
+	/*
+		1 Add random expression
+		2 Get expression from user
+		3 Sort by answer (low to high)
+		4 Output expression with answers
+		5 Delete expression by index
+		6 Sort by operation
+	*/
+	std::cout << "Enter the number of the option you would like:\n";
+	std::cout << "1 - Add random expression\n";
+	std::cout << "2 - Get expression from user\n";
+	std::cout << "3 - Sort by answer (low to high)\n";
+	std::cout << "4 - Output expression with answer\n";
+	std::cout << "5 - Delete expression by index\n";
+	std::cout << "6 - Sort by operation\n";
+	std::cout << "7 - Quit\n";
+	int res = 0;
+	std::cin >> res;
+	if (std::cin.good()) return res;
+	else {
+		std::cout << "Invalid selection!\n";
+		std::cin.clear();
+		std::cin.ignore(10000,'\n');
+		return 0;
+	}
 }
 
 int main () {
 	//v.reserve(30);
 	int selection = 0;
-	while (selection != 3) {
+	int index = 0;
+	while (selection != 7) {
 		Expr e = Expr(Frac(10,10), Frac(10,10), '*');
 		
 		char inputA[80] = "(-1200/120)*(10/5)";
@@ -272,6 +288,25 @@ int main () {
 				std::cout << "Outputting answers...\n";
 				outputAll();
 				break;
+			case 5:
+				std::cout << "Enter index of expression to remove:\n";
+				
+				std::cin >> index;
+				if (!std::cin.good()) {
+					std::cout << "Invalid input!\n";
+					std::cin.clear();
+					std::cin.ignore(10000, '\n');
+				} else {
+					std::cout << "Removing element " << index << ".\n";
+					if (index < 0 || index >= inputHistory.size()) std::cout << "Invalid input!";
+					else inputHistory.erase(inputHistory.begin() + index);
+				}
+				break;
+			case 6:
+				std::cout << "Outputting expressions sorted by operator...\n";
+				outputSortedOperator();
+				break;
+				
 			
 			/*
 			case 2:
