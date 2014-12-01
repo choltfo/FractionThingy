@@ -188,6 +188,23 @@ void outputSortedAnswer () {
 	}
 }
 
+inline bool exprOpSort (Expr A, Expr B) {
+	return A.o > B.o;
+}
+
+void outputSortedOperator () {
+	std::sort(inputHistory.begin(), inputHistory.end(), exprOpSort);
+	for (int i = 0; i < inputHistory.size(); ++i) {
+		if (i > 0) {
+			if (inputHistory[i].n != inputHistory[i-1].n) {
+				std::cout << (inputHistory[i].n == '*' ? "MULTIPLY" : inputHistory[i].n == '/' ? "DIVIDE" : inputHistory[i].n == '+' ? "ADD" : "SUBTRACT")
+				<< '\n';
+			}
+		}
+		std::cout << i << ": " << inputHistory[i] << " = " << inputHistory[i].eval() << '\n';
+	}
+}
+
 Expr randomExpr () {
 	int op = rand() % 4;
 	
