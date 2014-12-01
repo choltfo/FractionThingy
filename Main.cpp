@@ -193,9 +193,7 @@ inline bool exprOpSort (Expr A, Expr B) {
 }
 
 void outputSortedOperator () {
-	std::cout << "OKOJLKJehmaszdx\n";
 	std::sort(inputHistory.begin(), inputHistory.end(), exprOpSort);
-	std::cout << "OKOJLKJehmaszdx\n";
 	for (int i = 0; i < inputHistory.size(); ++i) {
 		if (i > 0) {
 			if (inputHistory[i].o != inputHistory[i-1].o) {
@@ -266,7 +264,7 @@ int main () {
 				6 Sort by operation
 			*/
 			case 1:
-				std::cout << "Generating random expression...";
+				std::cout << "Generating random expression...\n";
 				inputHistory.push_back(randomExpr());
 				break;
 			case 2:
