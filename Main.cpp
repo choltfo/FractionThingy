@@ -43,8 +43,10 @@ struct Frac {
     Frac operator/(const Frac& f) const;
     bool operator==(const Frac& f) const;
     bool operator!=(const Frac& f) const;
+	bool operator>(const Frac& f) const;
+	bool operator<(const Frac& f) const;
 
-    friend std::ostream& operator<<(std::ostream& os, const Frac& f);
+	friend std::ostream& operator<<(std::ostream& os, const Frac& f);
     friend std::istream& operator>>(std::istream& is, Frac& f);
 };
 
@@ -91,6 +93,14 @@ bool Frac::operator!=(const Frac &f) const {
     return !(*this == f);
 }
 
+bool Frac::operator>(const Frac &f) const {
+	return (float)num / (float)den > (float)f.num / (float)f.den;
+}
+
+bool Frac::operator<(const Frac &f) const {
+	return !(*this > f) && !(*this == f);
+}
+
 std::ostream &operator<<(std::ostream &os, const Frac &f) {
 	os << '(' << f.num;
 	if (f.den != 1) os  << '/' << f.den;
@@ -100,7 +110,8 @@ std::ostream &operator<<(std::ostream &os, const Frac &f) {
 
 std::istream &operator>>(std::istream &is, Frac &f) {
 	int n = 0, d = 0;
-	is >> '(' >> n >> '/' >> d >> ')';
+	char a;
+	is >> a >> n >> a >> d >> a;
 	if (!is.good()) return is;
 	f.num = n;
 	f.den = d;
@@ -153,7 +164,7 @@ std::istream &operator>>(std::istream &is, Expr &e) {
 	Frac a(0,0), b(0,0);
 	char o;
 	is >> a >> std::ws >> o >> std::ws >> b;
-	if (!is.good()) return is;
+	if (!is.good() || !isCharOper(o)) return is;
 	e.a = a;
 	e.b = b;
 	e.o = o;
@@ -272,3 +283,4 @@ int main () {
 	}
     return 0;
 }
+
