@@ -167,10 +167,6 @@ std::istream &operator>>(std::istream &is, Expr &e) {
 
 std::vector<Expr> inputHistory(0);
 
-inline bool exprComp (Expr A, Expr B) {
-	return A.eval() < B.eval();
-}
-
 void outputAll () {
 	for (int i = 0; i < inputHistory.size(); ++i) {
 		std::cout << i << ": " << inputHistory[i] << " = " << inputHistory[i].eval() << '\n';
@@ -178,12 +174,8 @@ void outputAll () {
 }
 
 void outputSortedAnswer () {
-	std::sort(inputHistory.begin(), inputHistory.end(), exprComp);
+	std::sort(inputHistory.begin(), inputHistory.end(), [](Expr A, Expr B){return A.eval() < B.eval();});
 	outputAll();
-}
-
-inline bool exprOpSort (Expr A, Expr B) {
-	return A.o > B.o;
 }
 
 inline std::string outLabel(char o) {
@@ -191,7 +183,7 @@ inline std::string outLabel(char o) {
 }
 
 void outputSortedOperator () {
-	std::sort(inputHistory.begin(), inputHistory.end(), exprOpSort);
+	std::sort(inputHistory.begin(), inputHistory.end(), [](Expr A, Expr B){return A.o > B.o;});
 	for (int i = 0; i < inputHistory.size(); ++i) {
 		if (i == 0)
 			std::cout << outLabel(inputHistory[i].o) << '\n';
@@ -214,14 +206,6 @@ Expr randomExpr () {
 }
 
 int menu () {
-	/*
-		1 Add random expression
-		2 Get expression from user
-		3 Sort by answer (low to high)
-		4 Output expression with answers
-		5 Delete expression by index
-		6 Sort by operation
-	*/
 	std::cout << "Enter the number of the option you would like:\n";
 	std::cout << "1 - Add random expression\n";
 	std::cout << "2 - Get expression from user\n";
@@ -233,12 +217,10 @@ int menu () {
 	int res = 0;
 	std::cin >> res;
 	if (std::cin.good()) return res;
-	else {
-		std::cout << "Invalid selection!\n";
-		std::cin.clear();
-		std::cin.ignore(10000,'\n');
-		return 0;
-	}
+	std::cout << "Invalid selection!\n";
+	std::cin.clear();
+	std::cin.ignore(10000,'\n');
+	return 0;
 }
 
 int main () {
